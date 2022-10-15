@@ -21,7 +21,7 @@ data_ideal_funcs = data_manager.get_data_from_table_as_dataframe("ideal_dat")
 print(data_ideal_funcs.head(10))
 
 
-df_test = pd.read_csv("test.csv")
+df_test = pd.read_csv("rawdata/test.csv")
 # print(df_test.columns)
 
 

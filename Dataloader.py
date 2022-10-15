@@ -29,12 +29,12 @@ class Data_manager(Helper):
         try:
             #if training-data table doesnt exist, read the csv file and add the data to the database
             if(not self.table_exists("train_dat")):
-                df_train = pd.read_csv("train.csv")
+                df_train = pd.read_csv("rawdata/train.csv")
                 df_train.to_sql('train_dat', con=self.engine)
                 self.db_session.commit() #Attempt to commit all the records
             #if ideal-model-data table doesnt exist, read the csv file and add the data to the database
             if(not self.table_exists("ideal_dat")):
-                df_train = pd.read_csv("ideal.csv")
+                df_train = pd.read_csv("rawdata/ideal.csv")
                 df_train.to_sql('ideal_dat', con=self.engine)
                 self.db_session.commit() #Attempt to commit all the records
         except Exception as e:
