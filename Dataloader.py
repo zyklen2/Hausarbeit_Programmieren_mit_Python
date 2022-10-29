@@ -21,25 +21,19 @@ class Data_manager(Helper):
     
     def __init__(self):
         #Create the database
-        self.engine = create_engine('sqlite:///data.db',echo=False)
+        self.engine = create_engine('sqlite:///data.db', echo=False)
         #Create the session
         self.sess_maker = sessionmaker()
         self.sess_maker.configure(bind=self.engine)
-        self.db_session = self.sess_maker()      
-        try:
-            #if training-data table doesnt exist, read the csv file and add the data to the database
-            if(not self.table_exists("train_dat")):
-                df_train = pd.read_csv("rawdata/train.csv")
-                df_train.to_sql('train_dat', con=self.engine)
-                self.db_session.commit() #Attempt to commit all the records
-            #if ideal-model-data table doesnt exist, read the csv file and add the data to the database
-            if(not self.table_exists("ideal_dat")):
-                df_train = pd.read_csv("rawdata/ideal.csv")
-                df_train.to_sql('ideal_dat', con=self.engine)
-                self.db_session.commit() #Attempt to commit all the records
-        except Exception as e:
-            self.db_session.rollback() #Rollback the changes on error
-            raise Exception(e)
+        self.db_session = self.sess_maker() 
+        #if training-data table doesnt exist, read the csv file and add the data to the database
+        if(not self.table_exists("train_dat")):
+            df = pd.read_csv("rawdata/train.csv")
+            self.create_new_database_table(df, 'train_dat')
+        #if ideal-model-data table doesnt exist, read the csv file and add the data to the database
+        if(not self.table_exists("ideal_dat")):
+            df = pd.read_csv("rawdata/ideal.csv")
+            self.create_new_database_table(df, 'ideal_dat')
         return 
     
     
@@ -80,7 +74,7 @@ class Data_manager(Helper):
     
     def table_exists(self, tablename):
         """
-        Helper function to check if the table "tablename" exists in the database
+        Function to check if the table "tablename" exists in the database
 
         Parameters
         ----------
@@ -95,3 +89,34 @@ class Data_manager(Helper):
         """
         return inspect(self.engine).has_table(tablename)
         
+    
+    def create_new_database_table(self, dataframe, tablename):
+        """
+        Function to create a new table to the database using a pandas dataframe
+
+        Parameters
+        ----------
+        dataframe : pandas dataframe
+            Dataframe with the data that should be added as table into the database.
+        tablename : String
+            Name under which the table should be added to the database
+
+        Returns
+        -------
+        None.
+
+        """
+        #add the table if no table with this name exists
+        if(not self.table_exists(tablename)):
+            dataframe.to_sql(tablename, con=self.engine)
+            self.db_session.commit() #Attempt to commit all the records
+        return
+    
+    
+    
+    
+    
+    
+    
+    
+    
