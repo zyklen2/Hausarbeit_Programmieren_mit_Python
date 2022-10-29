@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from Dataloader import Data_manager
+from datamanager import Data_manager
 
 print("Daten aus der Datenbank laden.")
 data_manager = Data_manager()
