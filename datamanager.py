@@ -20,6 +20,20 @@ class Data_manager(Helper):
     """
     
     def __init__(self, db_file_name="data"):
+        """
+        Init of the Data_manager-Class
+
+        Parameters
+        ----------
+        db_file_name : String, optional
+            Name of the Database-File, in which all tables should be saved and from which all data will be loaded. The default is "data".
+
+        Returns
+        -------
+        None.
+
+        """
+        
         #Create the database
         self.engine = create_engine(f'sqlite:///{db_file_name}.db', echo=False)
         #Create the session
@@ -62,13 +76,29 @@ class Data_manager(Helper):
             To return all columns use *, otherwise give the name of a specific column
             or give multiple column names separated by ","
 
+        Raises
+        ------
+        ValueError
+            If table_name or column_name is invalid.
+
         Returns
         -------
         pandas dataframe
             Returns is a pandas dataframe containing the data from one or multiple columns of the selected table.
 
         """
-        return pd.read_sql(f"SELECT {column_name} FROM {table_name}", self.db_session.bind)
+        if(self.table_exists(table_name)):
+            db_table = pd.read_sql(f"SELECT * FROM {table_name}", self.db_session.bind)
+            if(column_name=="*"):#All columns
+                return db_table
+            elif(type(column_name)!=list and column_name in list(db_table.columns)):#One specific column
+                return db_table[column_name]
+            elif(type(column_name)==list and all([name in list(db_table.columns) for name in column_name])):#Multiple specific columns
+                return db_table[column_name]
+            else:
+                raise ValueError(f"The table {table_name} does not have the column(s) {column_name}.")
+        else:
+            raise ValueError(f"The table {table_name} does not exist in the database.")
     
     
     def table_exists(self, tablename):
