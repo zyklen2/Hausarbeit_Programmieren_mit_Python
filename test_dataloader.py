@@ -9,10 +9,9 @@ import unittest
 import os
 import numpy as np
 import pandas as pd
-from helper import Helper
 from datamanager import Data_manager
 
-class Helpertests(unittest.TestCase):
+class Datamanagertests(unittest.TestCase):
     
     test_list1 = np.array([1, 6, 8, 3, 7, 7, 5, 3, 6, 3, 5, 7, 1, 2, 8, 6, 2, 9, 3, 9])
     test_list2 = np.array([5, 7, 5, 3, 8, 4, 0, 8, 1, 3, 5, 1, 8, 8, 9, 3, 6, 6, 5, 6])
